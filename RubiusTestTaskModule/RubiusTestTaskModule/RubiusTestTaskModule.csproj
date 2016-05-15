@@ -59,6 +59,8 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutocadConnection.cs" />
+    <Compile Include="DataSet.cs" />
     <Compile Include="RubiusTestAutocadExtension.cs" />
     <Compile Include="Dialog.xaml.cs">
       <DependentUpon>Dialog.xaml</DependentUpon>

@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.Colors;
+using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.Windows;
+using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 
 namespace RubiusTestTaskModule
@@ -11,6 +16,8 @@ namespace RubiusTestTaskModule
     {
         private PaletteSet _paletteSet;
         private Dialog _dialog;
+        private AutocadConnection _autocadConnection;
+
 
         // задаем команду автокада для вызова данной функции
         [CommandMethod("RubiusDialog")]
@@ -19,6 +26,11 @@ namespace RubiusTestTaskModule
             // инициализация полей
             if (_paletteSet==null)
                FieldInitialization();
+
+
+            _autocadConnection = new AutocadConnection();
+
+            FindAndShowObjects();
 
             // Делаем диалоговое окно видимым
             _paletteSet.KeepFocus = true;
@@ -40,28 +52,6 @@ namespace RubiusTestTaskModule
             // назначаем функцию для кнопки подтверждения
             _dialog.SetConformButtonClick(ConformActionFormDialog);
 
-            for (int i = 0; i < 100; i++)
-            {
-                Expander expander = new Expander();
-                expander.Header = "Expander"+i;
-                _dialog.spMain.Children.Add(expander);
-
-                Expander expander2 = new Expander();
-                expander2.Header = "Expander2";
-                expander2.Margin = new Thickness(20, 0, 0, 0);
-                expander.Content = (expander2);
-
-                StackPanel stackPanel = new StackPanel();
-                expander2.Content = stackPanel;
-
-                Label label = new Label();
-                label.Content = "!!!!!";
-                stackPanel.Children.Add(label);
-
-                TextBox textBox = new TextBox();
-                textBox.Text = "!!!!!";
-                stackPanel.Children.Add(textBox);
-            }
             // привязываем вьюшку к paletteSet
             _paletteSet.AddVisual("RubiusDialog", _dialog);
         }
@@ -69,10 +59,61 @@ namespace RubiusTestTaskModule
         // функция, вызываемая при нажатии на кнопку подтверждения
         private void ConformActionFormDialog()
         {
+            _dialog.Clear();
+            _autocadConnection.Dispose();
             // Делаем диалоговое окно невидимым
             _paletteSet.KeepFocus = false;
             _paletteSet.Visible = false;
         }
+
+
+        public void FindAndShowObjects()
+        {
+
+            var objects = _autocadConnection.FindObjects();
+
+            foreach (var layer in objects.Layers)
+            {
+                var layerContainer = _dialog.CreateLayerContainer(layer);
+
+
+                foreach (var line in objects.Lines)
+                {
+                    if (line.Layer == layer.Name)
+                    {
+                        Expander expander2 = new Expander();
+                        expander2.Header = "Line";
+                        layerContainer.Children.Add(expander2);
+                    }
+                }
+
+                foreach (var circle in objects.Circles)
+                {
+                    if (circle.Layer == layer.Name)
+                    {
+                        Expander expander2 = new Expander();
+                        expander2.Header = "Circle";
+                        layerContainer.Children.Add(expander2);
+                    }
+                }
+
+                foreach (var point in objects.Points)
+                {
+                    if (point.Layer == layer.Name)
+                    {
+                        Expander expander2 = new Expander();
+                        expander2.Header = "Point";
+                        layerContainer.Children.Add(expander2);
+                    }
+                }
+            }
+
+            
+        }
+        
+
+            
+        
 
         public void Initialize()
         {
