@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿
+using System;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace RubiusTestTaskModule
 {
@@ -20,9 +10,24 @@ namespace RubiusTestTaskModule
     /// </summary>
     public partial class Dialog : UserControl
     {
+        // Функция, вызываемая при нажатии кнопки подтверждения
+        private Action _conformAction;
+
         public Dialog()
         {
             InitializeComponent();
+        }
+
+        // задаем функцию
+        public void SetConformButtonClick(Action conformAction)
+        {
+            _conformAction = conformAction;
+        }
+
+        // При нажатии на кнопку просто вызываем привязанную функцию
+        private void BConfirmClick(object sender, System.Windows.RoutedEventArgs e)
+        {
+            _conformAction.Invoke();
         }
     }
 }
