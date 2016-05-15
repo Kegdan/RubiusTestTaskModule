@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Controls;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.Colors;
-using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.Windows;
-using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 
 namespace RubiusTestTaskModule
@@ -17,7 +11,7 @@ namespace RubiusTestTaskModule
         private PaletteSet _paletteSet;
         private Dialog _dialog;
         private AutocadConnection _autocadConnection;
-
+        private ViewAndDataConstractor _viewAndDataConstractor;
 
         // задаем команду автокада для вызова данной функции
         [CommandMethod("RubiusDialog")]
@@ -49,6 +43,7 @@ namespace RubiusTestTaskModule
             // создаем экземпляр wpf-вьюшки
             _dialog = new Dialog();
 
+            _viewAndDataConstractor = new ViewAndDataConstractor(_dialog.spMain);
             // назначаем функцию для кнопки подтверждения
             _dialog.SetConformButtonClick(ConformActionFormDialog);
 
@@ -59,14 +54,16 @@ namespace RubiusTestTaskModule
         // функция, вызываемая при нажатии на кнопку подтверждения
         private void ConformActionFormDialog()
         {
+            // очищаем диалог и закрываем соединение
             _dialog.Clear();
             _autocadConnection.Dispose();
+
             // Делаем диалоговое окно невидимым
             _paletteSet.KeepFocus = false;
             _paletteSet.Visible = false;
         }
 
-
+        // временний метод
         public void FindAndShowObjects()
         {
 
@@ -74,7 +71,7 @@ namespace RubiusTestTaskModule
 
             foreach (var layer in objects.Layers)
             {
-                var layerContainer = _dialog.CreateLayerContainer(layer);
+                var layerContainer = _viewAndDataConstractor.CreateLayerContainer(layer);
 
 
                 foreach (var line in objects.Lines)
@@ -83,7 +80,7 @@ namespace RubiusTestTaskModule
                     {
                         Expander expander2 = new Expander();
                         expander2.Header = "Line";
-                        layerContainer.Children.Add(expander2);
+                        layerContainer.LayerContainer.Children.Add(expander2);
                     }
                 }
 
@@ -93,7 +90,7 @@ namespace RubiusTestTaskModule
                     {
                         Expander expander2 = new Expander();
                         expander2.Header = "Circle";
-                        layerContainer.Children.Add(expander2);
+                        layerContainer.LayerContainer.Children.Add(expander2);
                     }
                 }
 
@@ -103,7 +100,7 @@ namespace RubiusTestTaskModule
                     {
                         Expander expander2 = new Expander();
                         expander2.Header = "Point";
-                        layerContainer.Children.Add(expander2);
+                        layerContainer.LayerContainer.Children.Add(expander2);
                     }
                 }
             }

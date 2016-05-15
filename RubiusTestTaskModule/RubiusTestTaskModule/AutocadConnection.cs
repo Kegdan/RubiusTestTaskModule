@@ -6,6 +6,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 
 namespace RubiusTestTaskModule
 {
+    // вспосогательный класс, осуществляющий работу с обьектами автокада, их закрузку и сохранение
     internal class AutocadConnection:IDisposable
     {
         private Transaction _transaction;
@@ -17,26 +18,7 @@ namespace RubiusTestTaskModule
             _transaction = _database.TransactionManager.StartTransaction();
         }
 
-        private List<LayerTableRecord> FindLayers()
-        {
-            var layers = new List<LayerTableRecord>();
-
-            LayerTable lt = _transaction.GetObject(_database.LayerTableId, OpenMode.ForWrite) as LayerTable;
-            foreach (ObjectId layerId in lt)
-            {
-                var layer = _transaction.GetObject(layerId, OpenMode.ForWrite) as LayerTableRecord;
-                layers.Add(layer);
-            }
-
-            return layers;
-        }
-
-
-        public void Dispose()
-        {
-            _transaction.Dispose();
-        }
-
+        // медот, вытаскивающий все интересующий нес обьекты. и помещающий их в класс-контейнер
         public DataSet FindObjects()
         {
             var objects = new DataSet();
@@ -63,6 +45,27 @@ namespace RubiusTestTaskModule
 
             return objects;
 
+        }
+
+        // метод, вытаскивающий обьекты-слои
+        private List<LayerTableRecord> FindLayers()
+        {
+            var layers = new List<LayerTableRecord>();
+
+            LayerTable lt = _transaction.GetObject(_database.LayerTableId, OpenMode.ForWrite) as LayerTable;
+            foreach (ObjectId layerId in lt)
+            {
+                var layer = _transaction.GetObject(layerId, OpenMode.ForWrite) as LayerTableRecord;
+                layers.Add(layer);
+            }
+
+            return layers;
+        }
+
+
+        public void Dispose()
+        {
+            _transaction.Dispose();
         }
     }
 }

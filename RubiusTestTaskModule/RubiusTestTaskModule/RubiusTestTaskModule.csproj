@@ -60,12 +60,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutocadConnection.cs" />
+    <Compile Include="ChangableElements\ChangeableLine.cs" />
+    <Compile Include="ChangableElements\ChangeablePoint.cs" />
+    <Compile Include="ChangableElements\ChangeableCircle.cs" />
+    <Compile Include="ChangableElements\ChangeableLayer.cs" />
     <Compile Include="DataSet.cs" />
+    <Compile Include="ChangableElements\IChangeable.cs" />
     <Compile Include="RubiusTestAutocadExtension.cs" />
     <Compile Include="Dialog.xaml.cs">
       <DependentUpon>Dialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewAndDataConstractor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Dialog.xaml">

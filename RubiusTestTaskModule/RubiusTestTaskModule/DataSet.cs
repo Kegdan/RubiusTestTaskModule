@@ -4,6 +4,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 
 namespace RubiusTestTaskModule
 {
+    // вспомогательный класс-контейнер
     internal class DataSet
     {
         public List<Line> Lines;
