@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -25,13 +24,13 @@ namespace RubiusTestTaskModule
 
             objects.Layers = FindLayers();
 
-            BlockTableRecord ms = (BlockTableRecord)_transaction.GetObject(SymbolUtilityServices.GetBlockModelSpaceId(_database), OpenMode.ForRead);
+            BlockTableRecord ms = (BlockTableRecord)_transaction.GetObject(SymbolUtilityServices.GetBlockModelSpaceId(_database), OpenMode.ForWrite);
 
             // "пробегаем" по всем объектам в пространстве модели
             foreach (ObjectId id in ms)
             {
                 // приводим каждый из них к типу Entity
-                Entity entity = (Entity)_transaction.GetObject(id, OpenMode.ForRead);
+                Entity entity = (Entity)_transaction.GetObject(id, OpenMode.ForWrite);
                 
                 if (entity.GetType() == typeof(Line))
                    objects.Lines.Add(entity as Line);
@@ -62,10 +61,16 @@ namespace RubiusTestTaskModule
             return layers;
         }
 
+        public void Commit()
+        {
+            _transaction.Commit();
+        }
 
         public void Dispose()
         {
             _transaction.Dispose();
         }
+
+        
     }
 }

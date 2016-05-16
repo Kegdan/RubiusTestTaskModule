@@ -12,19 +12,20 @@ namespace RubiusTestTaskModule
 
         public TextBox TbName;
         public CheckBox CbVisible;
-        public TextBox TbR;
-        public TextBox TbG;
-        public TextBox TbB;
-        public StackPanel LayerContainer;
+        public Tuple<TextBox, TextBox, TextBox> TbRGB;
+        public StackPanel SpLayerContainer;
 
         public ChangeableLayer(LayerTableRecord layer)
         {
             _layer = layer;
         }
 
+        // метод просматривает связанные с обьектом вью-компоненты, извлекает из них данные, и обновляет объект
         public void ApplyChange()
         {
-            _layer.Name = TbName.Text;
+            // нельзя сменить имя главного слоя, поэтому мы его не трогаем
+            if (_layer.Name != "0")
+                _layer.Name = TbName.Text;
 
             _layer.IsOff = (bool)!CbVisible.IsChecked;
 
@@ -32,13 +33,13 @@ namespace RubiusTestTaskModule
 
             byte r, g, b;
 
-            if (!byte.TryParse(TbR.Text, out r))
+            if (!byte.TryParse(TbRGB.Item1.Text, out r))
                 r = colorValue.R;
 
-            if (!byte.TryParse(TbG.Text, out g))
+            if (!byte.TryParse(TbRGB.Item2.Text, out g))
                 g = colorValue.G;
 
-            if (!byte.TryParse(TbB.Text, out b))
+            if (!byte.TryParse(TbRGB.Item3.Text, out b))
                 b = colorValue.B;
 
             _layer.Color = Color.FromRgb(r, g, b);
